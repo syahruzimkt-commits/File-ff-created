@@ -1,0 +1,575 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WANZX FILE CREATE</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #050505;
+    color: white;
+    min-height: 100vh;
+}
+
+.container {
+    width: 92%;
+    max-width: 500px;
+    margin: 35px auto;
+}
+
+h1 {
+    text-align: center;
+    color: #2196ff;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #888;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 15px;
+    padding: 18px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #bbb;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #080808;
+    color: white;
+    outline: none;
+    font-size: 16px;
+}
+
+input[type="text"]:focus {
+    border-color: #2196ff;
+}
+
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid #222;
+}
+
+.switch-row:last-child {
+    border-bottom: none;
+}
+
+.info {
+    color: #777;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 27px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #333;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .25s;
+}
+
+.switch input:checked + .slider {
+    background: #168cff;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(23px);
+}
+
+#createBtn,
+#downloadBtn {
+    width: 100%;
+    border: none;
+    border-radius: 11px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#createBtn {
+    background: #168cff;
+    color: white;
+}
+
+#createBtn:active,
+#downloadBtn:active {
+    transform: scale(.98);
+}
+
+#downloadBtn {
+    background: #16b957;
+    color: white;
+    margin-top: 12px;
+    display: none;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.spinner {
+    width: 42px;
+    height: 42px;
+    border: 4px solid #333;
+    border-top: 4px solid #168cff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#result {
+    display: none;
+    text-align: center;
+    color: #20d96b;
+    margin-top: 15px;
+}
+
+.filename {
+    color: #168cff;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>WANZX CPP GENERATOR</h1>
+    <div class="subtitle">C++ File Creator</div>
+
+    <div class="card">
+        <label>Nama File</label>
+        <input
+            type="text"
+            id="fileName"
+            placeholder="Contoh: wanzx"
+            autocomplete="off">
+    </div>
+
+    <div class="card">
+
+        <div class="switch-row">
+            <div>
+                <b>AIMBOT</b>
+                <div class="info">perhitungan arah target</div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="aimbot">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="switch-row">
+            <div>
+                <b>AIMLOCK 95%</b>
+                <div class="info">tracking 95%</div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="aimlock">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="switch-row">
+            <div>
+                <b>HEADLOCK 40%</b>
+                <div class="info">aim mengunci kepala 40%</div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="headlock">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="switch-row">
+            <div>
+                <b>AIM LICIN 80%</b>
+                <div class="info">licin 80%</div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="smooth">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <button id="createBtn" onclick="createFile()">
+            CREATE FILE
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Creating C++ file...</p>
+            <span id="count">3</span> detik
+        </div>
+
+        <div id="result">
+            File berhasil dibuat:
+            <div class="filename" id="resultName"></div>
+        </div>
+
+        <button id="downloadBtn" onclick="downloadFile()">
+            DOWNLOAD .CPP
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let generatedContent = "";
+let generatedFileName = "";
+
+function getAimbotCode() {
+return `
+// AIMBOT - SIMULASI OFFLINE
+#include <iostream>
+#include <cmath>
+
+struct Vector3 {
+    float x, y, z;
+};
+
+float calculateDistance(Vector3 a, Vector3 b) {
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float dz = b.z - a.z;
+
+    return std::sqrt(
+        dx * dx +
+        dy * dy +
+        dz * dz
+    );
+}
+
+int main() {
+
+    Vector3 target = {10.0f, 5.0f, 20.0f};
+    Vector3 player = {0.0f, 0.0f, 0.0f};
+
+    float distance =
+        calculateDistance(player, target);
+
+    std::cout
+        << "Target distance: "
+        << distance
+        << std::endl;
+
+    return 0;
+}
+`;
+}
+
+function getAimlockCode() {
+return `
+// AIMLOCK 95% - SIMULASI OFFLINE
+#include <iostream>
+
+float tracking(
+    float current,
+    float target,
+    float factor
+) {
+    return current +
+        (target - current) * factor;
+}
+
+void simulateAimlock() {
+
+    float crosshair = 100.0f;
+    float target = 200.0f;
+
+    float factor = 0.95f;
+
+    for (int frame = 1; frame <= 3; ++frame) {
+
+        crosshair =
+            tracking(
+                crosshair,
+                target,
+                factor
+            );
+
+        std::cout
+            << "Frame "
+            << frame
+            << ": "
+            << crosshair
+            << std::endl;
+    }
+}
+`;
+}
+
+function getHeadlockCode() {
+return `
+// HEADLOCK 40% - SIMULASI OFFLINE
+#include <iostream>
+
+float smoothTracking(
+    float current,
+    float target,
+    float factor
+) {
+    return current +
+        (target - current) * factor;
+}
+
+void simulateHeadTracking() {
+
+    float crosshair = 100.0f;
+    float target = 200.0f;
+
+    float factor = 0.40f;
+
+    for (int frame = 1; frame <= 5; ++frame) {
+
+        crosshair =
+            smoothTracking(
+                crosshair,
+                target,
+                factor
+            );
+
+        std::cout
+            << "Frame "
+            << frame
+            << ": "
+            << crosshair
+            << std::endl;
+    }
+}
+`;
+}
+
+function getSmoothCode() {
+return `
+// AIM LICIN 80% - SIMULASI OFFLINE
+#include <iostream>
+
+float smoothInput(
+    float current,
+    float target
+) {
+    const float sensitivity = 0.80f;
+
+    return current +
+        (target - current) *
+        sensitivity;
+}
+
+void simulateInput() {
+
+    float currentInput = 0.0f;
+    float targetInput = 100.0f;
+
+    currentInput =
+        smoothInput(
+            currentInput,
+            targetInput
+        );
+
+    std::cout
+        << "Optimized input: "
+        << currentInput
+        << std::endl;
+}
+`;
+}
+
+function createFile() {
+
+    let name =
+        document.getElementById("fileName")
+        .value.trim();
+
+    if (!name) {
+        alert("Masukkan nama file terlebih dahulu!");
+        return;
+    }
+
+    name = name.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+    generatedFileName = name + ".cpp";
+
+    let code = `// Generated by WANZX CPP Generator
+// File: ${generatedFileName}
+
+#include <iostream>
+
+`;
+
+    if (document.getElementById("aimbot").checked) {
+        code += getAimbotCode();
+    }
+
+    if (document.getElementById("aimlock").checked) {
+        code += getAimlockCode();
+    }
+
+    if (document.getElementById("headlock").checked) {
+        code += getHeadlockCode();
+    }
+
+    if (document.getElementById("smooth").checked) {
+        code += getSmoothCode();
+    }
+
+    if (
+        !document.getElementById("aimbot").checked &&
+        !document.getElementById("aimlock").checked &&
+        !document.getElementById("headlock").checked &&
+        !document.getElementById("smooth").checked
+    ) {
+        code += `
+// Tidak ada modul yang dipilih.
+
+int main() {
+    std::cout
+        << "Empty C++ project"
+        << std::endl;
+
+    return 0;
+}
+`;
+    }
+
+    generatedContent = code;
+
+    document.getElementById("createBtn")
+        .style.display = "none";
+
+    document.getElementById("loading")
+        .style.display = "block";
+
+    let seconds = 3;
+
+    document.getElementById("count")
+        .textContent = seconds;
+
+    let timer = setInterval(() => {
+
+        seconds--;
+
+        document.getElementById("count")
+            .textContent = seconds;
+
+        if (seconds <= 0) {
+
+            clearInterval(timer);
+
+            document.getElementById("loading")
+                .style.display = "none";
+
+            document.getElementById("result")
+                .style.display = "block";
+
+            document.getElementById("resultName")
+                .textContent = generatedFileName;
+
+            document.getElementById("downloadBtn")
+                .style.display = "block";
+        }
+
+    }, 1000);
+}
+
+function downloadFile() {
+
+    if (!generatedContent) return;
+
+    const blob = new Blob(
+        [generatedContent],
+        {
+            type: "text/plain;charset=utf-8"
+        }
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = generatedFileName;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+}
+
+</script>
+
+</body>
+</html>
+```
